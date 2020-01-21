@@ -88,13 +88,12 @@ class Enemy(Object):
         super().__init__()
         self.size_x, self.size_y = (100, 100)
         self.img_enemy = pygame.transform.scale(pygame.image.load('../image/enemy_1.png'),
-                                                 (self.size_x, self.size_y))
+                                                (self.size_x, self.size_y))
         self.img_enemy = pygame.transform.rotate(self.img_enemy, 180)
 
-        self.x = 200
-        self.y = 200
+        self.x = random.randint(0, WIDTH)
+        self.y = random.randint(0, HEIGHT // 2)
         screen.blit(self.img_enemy, (self.x, self.y))
-        print(self.x, self.y)
 
     def move_left(self):
         if (self.x - 5) > 0:
@@ -113,13 +112,21 @@ class Enemy(Object):
 
 # Variables for using in loop
 n = list()
+k_enemy = list()
 motion = 'STOP'
+
+all_sprites = pygame.sprite.Group()
+mobs = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
 
 # classes for using  in loop
 player = Player()
 back = Background()
-en = Enemy()
+for i in range(25):
+    k_enemy.append(Enemy())
+
 while True:
+
     back.everything()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -132,7 +139,8 @@ while True:
             elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                 motion = 'RIGHT'
             elif event.key == pygame.K_SPACE:
-                n.append(Bullet(player.for_bullet()))
+                b = Bullet(player.for_bullet())
+                n.append(b)
 
         elif event.type == pygame.KEYUP:
             if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_a, pygame.K_d]:
@@ -149,7 +157,7 @@ while True:
     elif motion == 'RIGHT':
         player.move_right()
 
-    print(n)
     player.otrisovka()
-    en.otrisovka()
+    for en in k_enemy:
+        en.otrisovka()
     pygame.display.flip()
